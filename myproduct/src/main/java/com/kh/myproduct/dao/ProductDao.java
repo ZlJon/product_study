@@ -2,7 +2,8 @@ package com.kh.myproduct.dao;
 
 import java.util.List;
 import java.util.Optional;
-
+//DAO의 껍데기 -> product 클래스를 타입을 활용하여 입력받을 수 있는 매개값을 제한
+//예: save(Product product) => product: 프로덕트의 내용을 다 받는 다는 것
 public interface ProductDao {
   /**
    상품 등록
@@ -33,9 +34,26 @@ public interface ProductDao {
    *@return  삭제된 레코드 수
    */
   int delete(Long productId);
+
+  /**
+   * 전체 삭제
+   * @return 삭제된 레코드 수
+   * */
+  int deleteAll();
   /**
    * 상품 목록
    * @return 상품목록
    * */
   List<Product> findAll();
+
+  /**
+   * 상품존재유무
+   */
+  boolean isExist(Long productId);
+
+  /**
+   * 등록된 상품 수
+   */
+  int countOfRecord();
 }
+

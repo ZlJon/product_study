@@ -22,18 +22,20 @@
           <tbody>
             <tr th:each="product : ${products}">
               <td th:text="${product.productId}">ID</td>
-              <a
-                href=""
-                th:href="@{/products/{id}/detail(id=${product.productId})}"
-                th:text="${product.pname}"
-              ></a>
+              <td>
+                <a
+                  href=""
+                  th:href="@{/products/{id}/detail(id=${product.productId})}"
+                  th:text="${product.pname}"
+                ></a>
+              </td>
               <td th:text="${product.quantity}">수량</td>
               <td th:text="${product.price}">가격</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <button id="btnAdd">등록</button>
+      <button id="btnAdd" th:text="#{button.add}">등록</button>
     </div>
     <script>
       const $btnAdd = document.getElementById('btnAdd');

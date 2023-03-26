@@ -19,5 +19,10 @@ public interface ProductSvc { //type으로써 역활을 하는 곳; 껍데기와
   int delete(Long productId);
   //상품 목록
   List<Product> findAll();
+
+  /**
+   * 상품존재유무
+   */
+  boolean isExist(Long productId);
 }
 

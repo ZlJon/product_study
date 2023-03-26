@@ -37,4 +37,14 @@ public class ProductSvcImpl implements ProductSvc{ //인터페이스의 구현�
   public List<Product> findAll() {
     return productDao.findAll();
   }
+
+  /**
+   * 상품존재유무
+   *
+   * @param productId
+   */
+  @Override
+  public boolean isExist(Long productId) {
+    return productDao.isExist(productId);
+  }
 }

@@ -103,4 +103,36 @@ public class ProductDaoImplTest {
 
     Assertions.assertThat(list.size()).isGreaterThan(0);
   }
+
+  @Test
+  @DisplayName("상품존재 유")
+  void isExist() {
+    Long productId = 345L;
+    boolean exist = productDao.isExist(productId);
+    Assertions.assertThat(exist).isTrue();
+  }
+
+  @Test
+  @DisplayName("상품존재 무")
+  void isExist2() {
+    Long productId = 0L;
+    boolean exist = productDao.isExist(productId);
+    Assertions.assertThat(exist).isTrue();
+  }
+
+  @Test
+  @DisplayName("전체 삭제")
+  void deleteAll() {
+    int deletedRows = productDao.deleteAll();
+    int countOfRecord = productDao.countOfRecord();
+    Assertions.assertThat(countOfRecord).isEqualTo(0);
+  }
+
+  @Test
+  @DisplayName("레코드 건 수")
+  void countOfRecord() {
+    int countOfRecord = productDao.countOfRecord();
+    log.info("countOfRecord={}",countOfRecord);
+  }
+
 }

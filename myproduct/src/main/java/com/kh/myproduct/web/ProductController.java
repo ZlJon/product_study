@@ -5,11 +5,13 @@ import com.kh.myproduct.svc.ProductSvc;
 import com.kh.myproduct.web.form.DetailForm;
 import com.kh.myproduct.web.form.SaveForm;
 import com.kh.myproduct.web.form.UpdateForm;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.util.StringUtils;
@@ -32,8 +34,11 @@ public class ProductController {
 
   //등록양식
   @GetMapping("/add")
-  public String saveForm() {
-
+  public String saveForm(Model model) {
+//  Model 빈객체를 생성해줌
+//  이걸 활용하는 이유는 saveForm을 사전에 만들어서 접근 가능하게 하는 것.
+    SaveForm saveForm = new SaveForm();
+    model.addAttribute("form", saveForm);
     return "product/saveForm";
     //랜더링할 뷰
   }
@@ -45,12 +50,42 @@ public class ProductController {
 //      @Param("quantity")Long quantity,
 //      @Param("price") Long price
 //      위와 같이도 작성이 가능하나 아래와 같이 간결하게 작성가능함.
-      @ModelAttribute SaveForm saveForm,
+      @Valid @ModelAttribute("form") SaveForm saveForm, //요청데이터를 저장하는 것. 즉 등록 버튼을 눌렸는데 오류가 나면 입력한 값이 사라지지 않고 유지됨.
+      BindingResult bindingResult, //@Valid를 사용하면 바로 뒤에 BindingResult가 있어야 된다. 검증 결과를 담는 객체
       RedirectAttributes redirectAttributes
       ) {
 //    log.info("pname={}, quantity={}, price={}", pname, quantity, price);
-      log.info("saveForm={}",saveForm);
+    log.info("saveForm={}", saveForm);
+
+    //어노테이션 기반 검증
+    if (bindingResult.hasErrors()) {
+      log.info("bindingResult={}",bindingResult);
+      return "product/saveForm";
+    }
+
+    // 필드 오류
+    if (saveForm.getQuantity() == 100) {
+      bindingResult.rejectValue("quantity","","수량100 입력불가!");
+    }
+
+    // 글로벌 오류
+    //총액(상품수량 * 단가) 1000만원 초과 시
+    if (saveForm.getQuantity() * saveForm.getPrice() > 10_000_000L) {
+      bindingResult.reject("", null, "총액(상품수량 * 단가) 1000만원 초과할 수 없습니다.");
+    }
+
+    if (saveForm.getQuantity() > 1 && saveForm.getPrice() < 10) {
+      bindingResult.reject("", null, "1~10 사이어야 합니다");
+    }
+
+    if (bindingResult.hasErrors()) {
+      log.info("bindingResult={}",bindingResult);
+      return "product/saveForm";
+    }
+
+
     //데이터 검증
+
     //등록
     Product product = new Product();
     product.setPname(saveForm.getPname());
@@ -64,7 +99,7 @@ public class ProductController {
   }
 
   //상품조회
-  @GetMapping("/{id}/detail")
+  @GetMapping("/{id}/detail") //{}를 통해 브릿지 안에 있는 값을 읽어올 수 있다.
   public String findById(
       @PathVariable("id") Long id,
       Model model

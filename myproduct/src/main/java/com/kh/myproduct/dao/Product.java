@@ -3,7 +3,7 @@ package com.kh.myproduct.dao;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+//해당 클래스는 데이터베이스의 테이블 안의 변수를 의미
 @Data //@ToString, @EqualsAndHashCode, @Getter, @Setter, @RequiredArgsConstructor
 // 엔터티 클래스 -> 자바와 데이터베이스가 매칭되어 있는 경우
 @AllArgsConstructor //모든 멤버필드를 매개변수로 하는 생성자 생성

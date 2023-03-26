@@ -13,8 +13,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -119,6 +118,20 @@ public class ProductDaoImpl implements ProductDao {
   }
 
   /**
+   * 전체 삭제
+   *
+   *
+   * @return 삭제된 레코드 수
+   */
+  @Override
+  public int deleteAll() {
+    String sql = "delete from product ";
+    Map<String, String> param = Map.of("", "");
+    int deletedRowCnt = template.update(sql, param);
+    return deletedRowCnt;
+  }
+
+  /**
    * 상품 목록
    *
    * @return 상품목록
@@ -174,4 +187,32 @@ public class ProductDaoImpl implements ProductDao {
 
   //자동매핑 : 테이블의 컬럼명과 자바객체 타입의 맴버필드가 같아야 한다.
   // BeanPropertyRowMapper.newInstance(자바 객체 타입)
+
+
+  /**
+   * 상품존재유무
+   *
+   * @param productId
+   */
+  @Override
+  public boolean isExist(Long productId) {
+    boolean isExist = false;
+    String sql = " select count(*) from product where product_id = :product_id ";
+
+    Map<String, Long> param = Map.of("product_id", productId);
+    Integer integer = template.queryForObject(sql, param, Integer.class);
+    isExist = (integer > 0) ? true : false;
+    return isExist;
+  }
+
+  /**
+   * 등록된 상품 수
+   */
+  @Override
+  public int countOfRecord() {
+    String sql = " select count(*) from product ";
+    Map<String, String> param = new LinkedHashMap<>();
+    Integer rows = template.queryForObject(sql, param, Integer.class);
+    return rows;
+  }
 }

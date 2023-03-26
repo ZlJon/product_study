@@ -74,8 +74,13 @@ public class ProductDaoImplTest2 {
     int deleteRowCnt = productDao.delete(productIds.get(idx));
     Assertions.assertThat(deleteRowCnt).isEqualTo(1);
 
+    boolean exist = productDao.isExist(productIds.get(idx));
+    Assertions.assertThat(exist).isFalse();
+
     List<Product> list = productDao.findAll();
     list.stream().forEach(product -> log.info("product={}", product));
     Assertions.assertThat(list.size()).isEqualTo(ProductDaoImplTest2.COUNT-1);
   }
+
+
 }
